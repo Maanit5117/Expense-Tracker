@@ -4,9 +4,11 @@ import android.R
 import android.R.attr.tint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,6 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Visibility
@@ -31,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -76,15 +81,20 @@ fun NewHomeScreen() {
             ) {
                 Column {
                     Text(text = "Good Afternoon", fontSize = 16.sp, color = Color.White)
-                    Text(text = "Maanit", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    Text(
+                        text = "Maanit",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
                 }
                 Icon(
                     imageVector = Icons.Default.Notifications,
                     contentDescription = null,
                     modifier = Modifier.align(Alignment.CenterEnd).size(32.dp),
-                  tint = Color.White,
+                    tint = Color.White,
 
-                )
+                    )
             }
 
             CardItem(
@@ -97,53 +107,42 @@ fun NewHomeScreen() {
                 isBalanceVisible = isBalanceVisible,
                 onToggleVisibility = { isBalanceVisible = !isBalanceVisible }
             )
+
+            TransactionList(modifier = Modifier.fillMaxWidth().constrainAs(list){
+                top.linkTo(card.bottom, margin = 16.dp)
+                start.linkTo(parent.start, margin = 16.dp)
+                end.linkTo(parent.end, margin = 16.dp)
+                bottom.linkTo(parent.bottom)
+                height = Dimension.fillToConstraints
+            })
+
         }
+
     }
+
 }
 
 @Composable
-fun CardItem(
-    modifier: Modifier,
-    isBalanceVisible: Boolean,
-    onToggleVisibility: () -> Unit
-) {
-    Column(
-        modifier = modifier  // USE THE PASSED MODIFIER HERE
-            .clip(RoundedCornerShape(16.dp))
-            .height(200.dp)
-            .background(zinc)
-            .padding(16.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Total Balance",
-                    fontSize = 16.sp,
-                    color = Color.White,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Text(
-                    text = if (isBalanceVisible) "$100" else "••••••",
-                    fontSize = 24.sp,
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            IconButton(onClick = onToggleVisibility) {
-                Icon(
-                    imageVector = if (isBalanceVisible)
-                        Icons.Default.Visibility
-                    else
-                        Icons.Default.VisibilityOff,
-                    contentDescription = "Toggle balance visibility",
-                    tint = Color.White,
-                    modifier = Modifier.size(32.dp)
-                )
+
+fun TransactionItem(Title: String,amount: String,icon: Int, date : String, color: Color){
+    Box (
+        modifier = Modifier.fillMaxWidth()
+    ){
+        Row {
+            Image(painter = painterResource(id = icon), contentDescription = null,
+                modifier = Modifier.size(50.dp))
+
+            Spacer(modifier = Modifier.size(8.dp))
+
+            Column {
+                Text(text = Title, fontSize = 16.sp, )
+                Text(text = date, fontSize = 12.sp, )
             }
         }
 
+        Text(text = amount, fontSize = 20.sp, modifier = Modifier.align(Alignment.CenterEnd), color = color)
     }
 }
+
+
+
