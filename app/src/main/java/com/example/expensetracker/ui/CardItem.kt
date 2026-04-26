@@ -77,7 +77,7 @@ fun CardItem(
 
             }
 
-            Spacer(modifier = Modifier.height(70.dp))
+            Spacer(modifier = Modifier.height(60.dp))
 
             Box(
                 modifier = Modifier.fillMaxWidth(),
