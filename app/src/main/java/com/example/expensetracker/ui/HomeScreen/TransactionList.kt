@@ -1,4 +1,4 @@
-package com.example.expensetracker.ui
+package com.example.expensetracker.ui.HomeScreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
