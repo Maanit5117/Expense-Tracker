@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -67,10 +68,14 @@ fun AddExpense() {
                     end.linkTo(parent.end)
                 }) {
 
-                Icon(imageVector = Icons.Default.ArrowBackIosNew,
-                    contentDescription = null,
-                    modifier = Modifier.align(Alignment.CenterStart).size(30.dp),
-                    tint = Color.White)
+                IconButton(onClick = {},
+                    modifier = Modifier.align(Alignment.CenterStart)) {
+                    Icon(imageVector = Icons.Default.ArrowBackIosNew,
+                        contentDescription = null,
+                        modifier = Modifier.align(Alignment.CenterStart).size(30.dp),
+                        tint = Color.White)
+                }
+
 
                 Text(
                     text = "Add Expense",
@@ -80,10 +85,15 @@ fun AddExpense() {
                     modifier = Modifier.padding(16.dp)
                         .align(Alignment.Center)
                 )
-                Icon(imageVector = Icons.Default.Menu,
-                    contentDescription = null,
-                    modifier = Modifier.align(Alignment.CenterEnd).size(30.dp),
-                    tint = Color.White)
+
+                IconButton(onClick = {},
+                    modifier = Modifier.align(Alignment.CenterEnd)){
+                    Icon(imageVector = Icons.Default.Menu,
+                        contentDescription = null,
+                        modifier = Modifier.align(Alignment.CenterEnd).size(30.dp),
+                        tint = Color.White)
+                }
+
             }
             DataForm(modifier = Modifier.padding(top = 60.dp).constrainAs(card){
                 top.linkTo(nameRow.bottom, margin = 16.dp)
@@ -107,7 +117,7 @@ fun DataForm(modifier: Modifier){
     Column(
         modifier = modifier.padding(16.dp)
             .fillMaxWidth()
-            .shadow(16.dp)
+            .shadow(20.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(Color.White)
             .padding(16.dp)

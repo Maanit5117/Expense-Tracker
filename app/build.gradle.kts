@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -59,7 +60,17 @@ dependencies {
     implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
     implementation("androidx.compose.material:material-icons-extended")
 
+        //for Room
+    implementation("androidx.room:room-runtime:2.8.4")
 
+    // for ksp
+    ksp("androidx.room:room-compiler:2.5.0")
+
+    // for coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+
+    //for extra icons
+    implementation("androidx.compose.material:material-icons-extended")
 
 
 }
