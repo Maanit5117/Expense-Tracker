@@ -1,11 +1,16 @@
 package com.example.expensetracker.Data
 
 import android.content.Context
+import androidx.room.Dao
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.expensetracker.Data.Dao.ExpenseDao
 import com.example.expensetracker.Data.Model.ExpenseEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Database(entities = [ExpenseEntity::class], version = 1)
 abstract class ExpenseDataBase : RoomDatabase(){
@@ -21,7 +26,25 @@ abstract class ExpenseDataBase : RoomDatabase(){
                 context.applicationContext,
                 ExpenseDataBase::class.java,
                 DATABASE_NAME
-            ).build()
+            ).addCallback(object : RoomDatabase.Callback(){
+                override fun onCreate(db: SupportSQLiteDatabase) {
+                    super.onCreate(db)
+                    InitBasicData(context)
+                }
+
+                fun InitBasicData(context: Context){
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val dao = getDatabase(context).expenseDao()
+                        dao.insertExpense(ExpenseEntity(id = 1, title = "Salary", amount = 10000.0, date = System.currentTimeMillis(), category = "Income", type = "Income"))
+                        dao.insertExpense(ExpenseEntity(id = 2, title = "Freelance", amount = 5000.0, date = System.currentTimeMillis(), category = "Income", type = "Income"))
+                        dao.insertExpense(ExpenseEntity(id = 3, title = "Groceries", amount = 5000.0, date = System.currentTimeMillis(), category = "Expense", type = "Expense"))
+                        dao.insertExpense(ExpenseEntity(id = 4, title = "Food", amount = 3500.0, date = System.currentTimeMillis(), category = "Expense", type = "Expense"))
+                        dao.insertExpense(ExpenseEntity(id = 5, title = "Transportation", amount = 1350.0, date = System.currentTimeMillis(), category = "Expense", type = "Expense"))
+                    }
+                }
+            })
+
+                .build()
         }
     }
 

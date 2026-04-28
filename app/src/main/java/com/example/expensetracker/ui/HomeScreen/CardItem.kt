@@ -33,7 +33,10 @@ import com.example.expensetracker.theme.zinc
 fun CardItem(
     modifier: Modifier,
     isBalanceVisible: Boolean,
-    onToggleVisibility: () -> Unit
+    onToggleVisibility: () -> Unit,
+    balance: String,
+    expenses: String,
+    income: String
 ) {
     Box (
         modifier = modifier  // USE THE PASSED MODIFIER HERE
@@ -49,13 +52,13 @@ fun CardItem(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Total Balance",
+                        text = "Balance",
                         fontSize = 16.sp,
                         color = Color.White,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
-                        text = if (isBalanceVisible) "$100" else "••••••",
+                        text = if (isBalanceVisible) balance else "••••••",
                         fontSize = 24.sp,
                         color = Color.White,
                         fontWeight = FontWeight.Bold
@@ -85,14 +88,14 @@ fun CardItem(
               CardRowItem(
                     modifier = Modifier.align(Alignment.CenterStart),
                     title = "Income",
-                    amount = "    $ 1349",
+                    amount = income,
                   icon = Icons.Default.ArrowDownward
                 )
 
                 CardRowItem(
                     modifier = Modifier.align(Alignment.CenterEnd),
                     title = "Expense",
-                    amount = "    $ 1349",
+                    amount = expenses,
                     icon = Icons.Default.ArrowUpward
                 )
 

@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -33,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import androidx.lifecycle.ViewModel
 import com.example.expensetracker.viewModel.HomeViewModel
 import com.example.expensetracker.viewModel.HomeViewModelfactory
 
@@ -92,19 +92,22 @@ fun NewHomeScreen() {
 
             val state = viewModel.expenses.collectAsState(initial = emptyList())
 
-            var expenses = viewModel.getTotalExpense(state.value)
+            val expenses = viewModel.getTotalExpense(state.value)
 
             val income = viewModel.getTotalIncome(state.value)
 
             val balance = viewModel.getBalance(state.value)
 
             CardItem(
-                modifier = Modifier.constrainAs(card) {
-                    top.linkTo(nameRow.bottom, margin = 16.dp)
-                    start.linkTo(parent.start, margin = 16.dp)
-                    end.linkTo(parent.end, margin = 16.dp)
+                modifier = Modifier.constrainAs(ref = card) {
+                    top.linkTo(anchor = nameRow.bottom, margin = 16.dp)
+                    start.linkTo(anchor = parent.start, margin = 16.dp)
+                    end.linkTo(anchor = parent.end, margin = 16.dp)
                     width = Dimension.fillToConstraints
                 },
+                balance = "₹${balance}",
+                income = "₹${income}",
+                expenses = "₹${expenses}",
                 isBalanceVisible = isBalanceVisible,
                 onToggleVisibility = { isBalanceVisible = !isBalanceVisible }
             )
@@ -115,7 +118,7 @@ fun NewHomeScreen() {
                 end.linkTo(parent.end, margin = 16.dp)
                 bottom.linkTo(parent.bottom)
                 height = Dimension.fillToConstraints
-            })
+            }, list = state.value, viewModel = viewModel)
 
         }
 
@@ -125,7 +128,7 @@ fun NewHomeScreen() {
 
 @Composable
 
-fun TransactionItem(Title: String,amount: String,icon: Int, date : String, color: Color){
+fun TransactionItem(Title: String, amount: String, icon: Int, date: String, color: Color){
     Box (
         modifier = Modifier.fillMaxWidth()
     ){
