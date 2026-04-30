@@ -2,6 +2,7 @@ package com.example.expensetracker.ui.AddNewExpense
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,12 +21,19 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -113,7 +121,14 @@ fun AddExpensePreview(){
 }
 
 @Composable
-fun DataForm(modifier: Modifier){
+fun DataForm(modifier: Modifier) {
+
+    val name = remember { mutableStateOf("") }
+    val amount = remember { mutableStateOf("") }
+    val date = remember { mutableStateOf(0L) }
+    val dateDialogueVisibility = remember { mutableStateOf(false) }
+
+
     Column(
         modifier = modifier.padding(16.dp)
             .fillMaxWidth()
@@ -123,43 +138,75 @@ fun DataForm(modifier: Modifier){
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
+        Text(text = "Name", fontSize = 14.sp)
+        Spacer(modifier = Modifier.size(8.dp))
+        OutlinedTextField(
+            value = name.value,
+            onValueChange = { name.value = it },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        Text(text = "Type", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
-        Spacer(modifier = Modifier.size(4.dp))
-        OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.fillMaxWidth())
+        Text(text = "Amount", fontSize = 14.sp)
+        Spacer(modifier = Modifier.size(8.dp))
+        OutlinedTextField(
+            value = amount.value,
+            onValueChange = { amount.value = it },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-        Spacer(modifier = Modifier.size(10.dp))
+        //date
+        Text(text = "Date", fontSize = 14.sp)
+        Spacer(modifier = Modifier.size(8.dp))
+        OutlinedTextField(
+            value =date.value.toString(),
+            onValueChange = { },
+            modifier = Modifier.fillMaxWidth().clickable {dateDialogueVisibility.value= true}, enabled = false
+        )
 
-        Text(text = "Name", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
-        Spacer(modifier = Modifier.size(4.dp))
-        OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.fillMaxWidth())
 
-        Spacer(modifier = Modifier.size(10.dp))
+        //category
 
-        Text(text = "Category", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
-        Spacer(modifier = Modifier.size(4.dp))
-        OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.fillMaxWidth())
 
-        Spacer(modifier = Modifier.size(10.dp))
+        //type
 
-        Text(text = "Amount", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
-        Spacer(modifier = Modifier.size(4.dp))
-        OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.fillMaxWidth())
-
-        Spacer(modifier = Modifier.size(10.dp))
-
-        Text(text = "Date", fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
-        Spacer(modifier = Modifier.size(4.dp))
-        OutlinedTextField(value = "", onValueChange = {}, modifier = Modifier.fillMaxWidth())
-
-        Button(onClick = {}, modifier = Modifier.fillMaxWidth().padding(20.dp),
+        Button(
+            onClick = {}, modifier = Modifier.fillMaxWidth().padding(20.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF2F7E79),
                 contentColor = Color.White
-            )) {
+            )
+        ) {
             Text(text = "Add Expense", fontSize = 17.sp, color = Color.White)
         }
     }
+    if (dateDialogueVisibility.value) {
+        ExpenseDatePickerDialogue(onDateSelected = {date.value = it
+                                                    dateDialogueVisibility.value = false}, onDismiss = {
+                                                        dateDialogueVisibility.value= false
+        })
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ExpenseDatePickerDialogue(
+    onDateSelected: (date:Long) -> Unit,
+    onDismiss: () -> Unit
+){
+    val datePickerState = rememberDatePickerState()
+    val selectedDate = datePickerState.selectedDateMillis?: 0L
+
+    DatePickerDialog(onDismissRequest = {onDismiss}
+        , confirmButton = { TextButton({ onDateSelected(selectedDate) }){
+            Text(text = "OK")
+        } },
+        dismissButton = { TextButton(onClick = { onDismiss() }) {
+            Text(text = "Cancel")
+        }
+        }){
+        DatePicker(state = datePickerState)
+    }
+
 }
 
 
