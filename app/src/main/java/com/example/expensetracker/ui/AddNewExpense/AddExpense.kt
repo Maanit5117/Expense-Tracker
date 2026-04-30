@@ -146,6 +146,8 @@ fun DataForm(modifier: Modifier) {
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(modifier = Modifier.size(8.dp))
+
         Text(text = "Amount", fontSize = 14.sp)
         Spacer(modifier = Modifier.size(8.dp))
         OutlinedTextField(
@@ -154,11 +156,13 @@ fun DataForm(modifier: Modifier) {
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(modifier = Modifier.size(8.dp))
+
         //date
         Text(text = "Date", fontSize = 14.sp)
         Spacer(modifier = Modifier.size(8.dp))
         OutlinedTextField(
-            value =date.value.toString(),
+            value = if(date.value == 0L) "Select Date" else utlis.formatDateToHumanReadableForm(date.value),
             onValueChange = { },
             modifier = Modifier.fillMaxWidth().clickable {dateDialogueVisibility.value= true}, enabled = false
         )
@@ -181,11 +185,11 @@ fun DataForm(modifier: Modifier) {
     }
     if (dateDialogueVisibility.value) {
         ExpenseDatePickerDialogue(onDateSelected = {date.value = it
-                                                    dateDialogueVisibility.value = false}, onDismiss = {
-                                                        dateDialogueVisibility.value= false
-        })
+            dateDialogueVisibility.value = false}, onDismiss = {
+            dateDialogueVisibility.value= false})
     }
-}
+        }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -196,11 +200,11 @@ fun ExpenseDatePickerDialogue(
     val datePickerState = rememberDatePickerState()
     val selectedDate = datePickerState.selectedDateMillis?: 0L
 
-    DatePickerDialog(onDismissRequest = {onDismiss}
-        , confirmButton = { TextButton({ onDateSelected(selectedDate) }){
+    DatePickerDialog(onDismissRequest = {onDismiss()}
+        , confirmButton = { TextButton(onClick = { onDateSelected(selectedDate) }){
             Text(text = "OK")
         } },
-        dismissButton = { TextButton(onClick = { onDismiss() }) {
+        dismissButton = { TextButton(onClick = { onDateSelected(selectedDate) }) {
             Text(text = "Cancel")
         }
         }){
