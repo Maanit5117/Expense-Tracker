@@ -1,6 +1,7 @@
 package com.example.expensetracker.ui.HomeScreen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Icon
@@ -23,8 +25,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -34,18 +36,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.expensetracker.viewModel.HomeViewModel
 import com.example.expensetracker.viewModel.HomeViewModelfactory
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true)
-fun NewHomeScreen() {
+
+fun NewHomeScreen(navController: NavController) {
 
         val viewModel: HomeViewModel = HomeViewModelfactory(LocalContext.current).create(HomeViewModel::class.java)
     var isBalanceVisible by remember { mutableStateOf(true) }
     Surface(modifier = Modifier.fillMaxSize()) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
-            val (nameRow, list, card, topbar) = createRefs()
+            val (nameRow, list, card, topbar, add) = createRefs()
 
             Image(
                 painter = painterResource(com.example.expensetracker.R.drawable.homescreen_topbar),
@@ -120,6 +124,15 @@ fun NewHomeScreen() {
                 height = Dimension.fillToConstraints
             }, list = state.value, viewModel = viewModel)
 
+            Image(painter = painterResource(com.example.expensetracker.R.drawable.addbutton),contentDescription = null
+                , modifier = Modifier.constrainAs(add){
+                    bottom.linkTo(parent.bottom, margin = 16.dp)
+                    start.linkTo(parent.start, margin = 16.dp)
+                    end.linkTo(parent.end, margin = 16.dp)
+            }.size(49.dp)
+                    .clip(CircleShape)
+                    .clickable{ navController.navigate("addExpense")})
+
         }
 
     }
@@ -146,6 +159,12 @@ fun TransactionItem(Title: String, amount: String, icon: Int, date: String, colo
 
         Text(text = amount, fontSize = 20.sp, modifier = Modifier.align(Alignment.CenterEnd), color = color)
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+fun HomeScreenPreview(){
+    NewHomeScreen(rememberNavController())
 }
 
 

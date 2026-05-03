@@ -3,7 +3,6 @@ package com.example.expensetracker.ui.AddNewExpense
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -23,23 +21,30 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,10 +52,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
-import com.example.expensetracker.R
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.expensetracker.Data.Model.ExpenseEntity
+import com.example.expensetracker.viewModel.AddExpenseViewModel
+import com.example.expensetracker.viewModel.AddExpenseViewModelfactory
+import kotlinx.coroutines.launch
 
 @Composable
-fun AddExpense() {
+fun AddExpense(navController: NavController) {
+    val ViewModel= AddExpenseViewModelfactory(LocalContext.current).create(AddExpenseViewModel::class.java)
+
+    val coroutineScope = rememberCoroutineScope()
     Surface(modifier = Modifier.fillMaxSize()) {
         ConstraintLayout(modifier = Modifier.fillMaxSize()) {
             val (nameRow, list, card, topbar) = createRefs()
@@ -76,7 +89,7 @@ fun AddExpense() {
                     end.linkTo(parent.end)
                 }) {
 
-                IconButton(onClick = {},
+                IconButton(onClick = { navController.navigateUp()},
                     modifier = Modifier.align(Alignment.CenterStart)) {
                     Icon(imageVector = Icons.Default.ArrowBackIosNew,
                         contentDescription = null,
@@ -107,6 +120,9 @@ fun AddExpense() {
                 top.linkTo(nameRow.bottom, margin = 16.dp)
                 start.linkTo(parent.start, margin = 16.dp)
                 end.linkTo(parent.end, margin = 16.dp)
+            }, onAddExpenseClick = { coroutineScope.launch { if (ViewModel.addExpense(it)){
+            navController.popBackStack()}
+            }
             })
         }
     }
@@ -117,16 +133,18 @@ fun AddExpense() {
 @Composable
 @Preview(showBackground = true, showSystemUi = true )
 fun AddExpensePreview(){
-    AddExpense()
+    AddExpense(rememberNavController())
 }
 
 @Composable
-fun DataForm(modifier: Modifier) {
+fun DataForm(modifier: Modifier, onAddExpenseClick: (model: ExpenseEntity) -> Unit) {
 
     val name = remember { mutableStateOf("") }
     val amount = remember { mutableStateOf("") }
     val date = remember { mutableStateOf(0L) }
     val dateDialogueVisibility = remember { mutableStateOf(false) }
+    val category = remember { mutableStateOf("") }
+    val type = remember { mutableStateOf("") }
 
 
     Column(
@@ -139,7 +157,7 @@ fun DataForm(modifier: Modifier) {
             .verticalScroll(rememberScrollState())
     ) {
         Text(text = "Name", fontSize = 14.sp)
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(4.dp))
         OutlinedTextField(
             value = name.value,
             onValueChange = { name.value = it },
@@ -149,7 +167,7 @@ fun DataForm(modifier: Modifier) {
         Spacer(modifier = Modifier.size(8.dp))
 
         Text(text = "Amount", fontSize = 14.sp)
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(4.dp))
         OutlinedTextField(
             value = amount.value,
             onValueChange = { amount.value = it },
@@ -160,21 +178,43 @@ fun DataForm(modifier: Modifier) {
 
         //date
         Text(text = "Date", fontSize = 14.sp)
-        Spacer(modifier = Modifier.size(8.dp))
+        Spacer(modifier = Modifier.size(4.dp))
         OutlinedTextField(
             value = if(date.value == 0L) "Select Date" else utlis.formatDateToHumanReadableForm(date.value),
             onValueChange = { },
             modifier = Modifier.fillMaxWidth().clickable {dateDialogueVisibility.value= true}, enabled = false
         )
 
+        Spacer(modifier = Modifier.size(8.dp))
 
-        //category
+       //dropdown
+        Text(text = "Category", fontSize = 14.sp)
+        Spacer(modifier = Modifier.size(4.dp))
+        ExpenseDropDown(listOf("Netflix", "Groceries", "Salary","Transportation","Food"), onItemSelected = {
+            category.value = it
+        })
 
-
+        Spacer(modifier = Modifier.size(8.dp))
         //type
+        Text(text = "type", fontSize = 14.sp)
+        Spacer(modifier = Modifier.size(4.dp))
+        ExpenseDropDown(listOf("Income", "Expense"), onItemSelected = {
+            type.value = it
+        })
 
         Button(
-            onClick = {}, modifier = Modifier.fillMaxWidth().padding(20.dp),
+            onClick = {
+                val expense = ExpenseEntity(
+                    id = 0,
+                    title = name.value,
+                    amount = amount.value.toDoubleOrNull()?:0.0,
+                    date= date.value,
+                    category = category.value,
+                    type = type.value
+                )
+                onAddExpenseClick(expense)
+
+            }, modifier = Modifier.fillMaxWidth().padding(20.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFF2F7E79),
                 contentColor = Color.White
@@ -212,6 +252,48 @@ fun ExpenseDatePickerDialogue(
     }
 
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ExpenseDropDown(listOfItems: List<String>, onItemSelected: (item:String) -> Unit){
+    val expended = remember { mutableStateOf(false) }
+
+    val selectedItem = remember { mutableStateOf<String>(listOfItems[0]) }
+
+    ExposedDropdownMenuBox(
+        expanded = expended.value,
+        onExpandedChange = { expended.value = !expended.value }
+    ) {
+        TextField(
+            value = selectedItem.value,
+            onValueChange = {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor(MenuAnchorType.PrimaryNotEditable),
+            readOnly = true,
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expended.value)
+            }
+        )
+
+        ExposedDropdownMenu(
+            expanded = expended.value,
+            onDismissRequest = { expended.value = false }
+        ) {
+            listOfItems.forEach {
+                DropdownMenuItem(
+                    text = { Text(text = it) },
+                    onClick = {
+                        selectedItem.value = it
+                        onItemSelected(it)
+                        expended.value = false
+                    }
+                )
+            }
+        }
+    }
+    }
+
 
 
 

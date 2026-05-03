@@ -35,11 +35,6 @@ abstract class ExpenseDataBase : RoomDatabase(){
                 fun InitBasicData(context: Context){
                     CoroutineScope(Dispatchers.IO).launch {
                         val dao = getDatabase(context).expenseDao()
-                        dao.insertExpense(ExpenseEntity(id = 1, title = "Salary", amount = 10000.0, date = System.currentTimeMillis(), category = "Income", type = "Income"))
-                        dao.insertExpense(ExpenseEntity(id = 2, title = "Freelance", amount = 5000.0, date = System.currentTimeMillis(), category = "Income", type = "Income"))
-                        dao.insertExpense(ExpenseEntity(id = 3, title = "Groceries", amount = 5000.0, date = System.currentTimeMillis(), category = "Expense", type = "Expense"))
-                        dao.insertExpense(ExpenseEntity(id = 4, title = "Food", amount = 3500.0, date = System.currentTimeMillis(), category = "Expense", type = "Expense"))
-                        dao.insertExpense(ExpenseEntity(id = 5, title = "Transportation", amount = 1350.0, date = System.currentTimeMillis(), category = "Expense", type = "Expense"))
                     }
                 }
             })

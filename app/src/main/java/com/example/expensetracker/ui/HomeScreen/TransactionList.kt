@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.expensetracker.Data.Model.ExpenseEntity
 import com.example.expensetracker.R
+import com.example.expensetracker.ui.AddNewExpense.utlis
 import com.example.expensetracker.viewModel.HomeViewModel
 
 @Composable
@@ -43,7 +44,7 @@ fun TransactionList(modifier : Modifier, list: List<ExpenseEntity>, viewModel: H
                 Title = expense.title,
                 amount = expense.amount.toString(),
                 icon = viewModel.getItemIcon(expense),
-                date = expense.date.toString(),
+                date = utlis.formatDateToHumanReadableForm(expense.date),
                 color = if (expense.type == "Income") Color.Green else Color.Red
             )
         }
