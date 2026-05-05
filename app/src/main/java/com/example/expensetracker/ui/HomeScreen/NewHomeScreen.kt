@@ -122,11 +122,11 @@ fun NewHomeScreen(navController: NavController) {
                 end.linkTo(parent.end, margin = 16.dp)
                 bottom.linkTo(parent.bottom)
                 height = Dimension.fillToConstraints
-            }, list = state.value, viewModel = viewModel)
+            }, list = state.value, isBalanceVisible = isBalanceVisible)
 
             Image(painter = painterResource(com.example.expensetracker.R.drawable.addbutton),contentDescription = null
                 , modifier = Modifier.constrainAs(add){
-                    bottom.linkTo(parent.bottom, margin = 16.dp)
+                    bottom.linkTo(parent.bottom, margin = 10.dp)
                     start.linkTo(parent.start, margin = 16.dp)
                     end.linkTo(parent.end, margin = 16.dp)
             }.size(49.dp)
@@ -141,7 +141,7 @@ fun NewHomeScreen(navController: NavController) {
 
 @Composable
 
-fun TransactionItem(Title: String, amount: String, icon: Int, date: String, color: Color){
+fun TransactionItem(Title: String, amount: String, icon: Int, date: String, color: Color, isBalanceVisible: Boolean){
     Box (
         modifier = Modifier.fillMaxWidth()
     ){
@@ -157,7 +157,7 @@ fun TransactionItem(Title: String, amount: String, icon: Int, date: String, colo
             }
         }
 
-        Text(text = amount, fontSize = 20.sp, modifier = Modifier.align(Alignment.CenterEnd), color = color)
+        Text(text = if (isBalanceVisible) amount else "••••••", fontSize = 20.sp, modifier = Modifier.align(Alignment.CenterEnd), color = color)
     }
 }
 

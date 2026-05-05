@@ -19,23 +19,26 @@ import com.example.expensetracker.ui.AddNewExpense.utlis
 import com.example.expensetracker.viewModel.HomeViewModel
 
 @Composable
-fun TransactionList(modifier : Modifier, list: List<ExpenseEntity>, viewModel: HomeViewModel) {
+fun TransactionList(modifier : Modifier, list: List<ExpenseEntity>, isBalanceVisible: Boolean, title : String = "Recent Transactions", ) {
     LazyColumn(modifier = modifier.padding(16.dp)) {
         item {
             Box(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Recent Transactions",
+                    text = title,
                     fontSize = 18.sp,
                     color = Color.Black,
                     fontWeight = FontWeight.SemiBold
                 )
-                Text(
-                    text = "See All",
-                    fontSize = 18.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.align(Alignment.CenterEnd)
-                )
+
+                if (title == "Recent Transactions") {
+                    Text(
+                        text = "See All",
+                        fontSize = 18.sp,
+                        color = Color.Black,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.align(Alignment.CenterEnd)
+                    )
+                }
             }
         }
 
@@ -43,9 +46,10 @@ fun TransactionList(modifier : Modifier, list: List<ExpenseEntity>, viewModel: H
             TransactionItem(
                 Title = expense.title,
                 amount = expense.amount.toString(),
-                icon = viewModel.getItemIcon(expense),
+                icon = utlis.getItemIcon(expense),
                 date = utlis.formatDateToHumanReadableForm(expense.date),
-                color = if (expense.type == "Income") Color.Green else Color.Red
+                color = if (expense.type == "Income") Color.Green else Color.Red,
+                isBalanceVisible = isBalanceVisible
             )
         }
 

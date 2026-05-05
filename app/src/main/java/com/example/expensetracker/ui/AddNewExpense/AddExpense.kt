@@ -29,6 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -182,7 +183,11 @@ fun DataForm(modifier: Modifier, onAddExpenseClick: (model: ExpenseEntity) -> Un
         OutlinedTextField(
             value = if(date.value == 0L) "Select Date" else utlis.formatDateToHumanReadableForm(date.value),
             onValueChange = { },
-            modifier = Modifier.fillMaxWidth().clickable {dateDialogueVisibility.value= true}, enabled = false
+            modifier = Modifier.fillMaxWidth().clickable {dateDialogueVisibility.value= true}, enabled = false,
+            colors = OutlinedTextFieldDefaults.colors(
+                disabledBorderColor = Color.Black,
+                disabledTextColor = Color.Black,
+            )
         )
 
         Spacer(modifier = Modifier.size(8.dp))

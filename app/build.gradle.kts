@@ -78,5 +78,8 @@ dependencies {
     // for navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
 
+    // for stats
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
 
 }

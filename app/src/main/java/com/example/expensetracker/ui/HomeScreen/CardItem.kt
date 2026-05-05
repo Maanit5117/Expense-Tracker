@@ -88,14 +88,14 @@ fun CardItem(
               CardRowItem(
                     modifier = Modifier.align(Alignment.CenterStart),
                     title = "Income",
-                    amount = income,
+                  amount = if (isBalanceVisible) income else "••••••",
                   icon = Icons.Default.ArrowDownward
                 )
 
                 CardRowItem(
                     modifier = Modifier.align(Alignment.CenterEnd),
                     title = "Expense",
-                    amount = expenses,
+                    amount = if (isBalanceVisible) expenses else "••••••",
                     icon = Icons.Default.ArrowUpward
                 )
 
